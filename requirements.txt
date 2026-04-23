@@ -1,0 +1,15 @@
+ccxt
+pandas
+numpy
+pandas-ta
+plotly
+matplotlib
+pyyaml
+tqdm
+scikit-learn
+lightgbm
+xgboost
+backtrader
+vectorbt
+requests
+python-dotenv

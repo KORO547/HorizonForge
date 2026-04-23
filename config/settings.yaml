@@ -1,0 +1,18 @@
+project:
+  name: HorizonForge
+  version: 0.1.0
+  description: Global Multi-Market Alpha Prediction System
+
+data:
+  base_path: "data"
+  timeframe: "1h"           # сейчас работаем с часовыми свечками
+  symbols:                  # какие монеты будем скачивать сначала
+    - "BTC/USDT"
+    - "ETH/USDT"
+
+exchanges:
+  binance:
+    enabled: true
+    rate_limit: true       # чтобы не получить бан от биржи
+  coinbase:
+    enabled: true

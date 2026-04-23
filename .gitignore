@@ -1,0 +1,23 @@
+# Временные файлы Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Данные (не загружаем на GitHub, они могут быть очень большими)
+data/raw/*
+data/processed/*
+data/features/*
+*.parquet
+*.csv
+*.pkl
+
+# Логи и результаты
+logs/
+results/
+
+# Секретные файлы (API-ключи и т.д.)
+config/api_keys.yaml
+.env
+
+# Настройки редактора
+.vscode/
