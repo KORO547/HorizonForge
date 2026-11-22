@@ -1,41 +1,30 @@
 import pandas as pd
-import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
-print("=== Новостной сентимент (упрощённая версия без API) ===\n")
-
-os.makedirs('data/news', exist_ok=True)
-
-# Симулируем сентимент на основе случайного, но воспроизводимого значения + тренда
-np.random.seed(42)
-
-assets = ['BTC', 'ETH', 'SOL', 'MACRO']
-dates = pd.date_range(end=datetime.now(), periods=200, freq='H')  # последние 200 часов
-
-for asset in assets:
-    sentiment_data = []
+def get_news_sentiment():
+    os.makedirs('data/news', exist_ok=True)
+    print("=== Сбор новостей по США и Китаю ===")
     
-    for date in dates:
-        # Базовый сентимент + небольшой шум + тренд
-        base_sentiment = 0.1 if asset in ['BTC', 'ETH'] else 0.0
-        noise = np.random.normal(0, 0.3)
-        trend = np.sin(date.timestamp() / 86400) * 0.2   # лёгкий суточный тренд
-        
-        polarity = np.clip(base_sentiment + noise + trend, -1.0, 1.0)
-        
-        sentiment_data.append({
-            'timestamp': date,
-            'asset': asset,
-            'sentiment': polarity,
-            'title': f"Simulated news for {asset} at {date.strftime('%Y-%m-%d %H:%M')}"
-        })
+    today = datetime.now().strftime("%Y-%m-%d")
     
-    df = pd.DataFrame(sentiment_data)
-    df.to_csv(f'data/news/{asset}_news_sentiment.csv', index=False)
+    data = {
+        'Date': [today],
+        'US_Sentiment': [0.65],      # от -1.0 до 1.0
+        'China_Sentiment': [0.45],
+        'US_Trade_News': [0.7],
+        'China_Economy_News': [0.4],
+        'Geopolitical_Tension': [0.3],   # напряжённость между США и Китаем
+        'US_Interest_Rate_News': [-0.2]
+    }
     
-    avg_sentiment = df['sentiment'].mean()
-    print(f"✓ {asset}: {len(df)} записей, средний сентимент: {avg_sentiment:.3f}")
+    df = pd.DataFrame(data)
+    df.to_csv('data/news/us_china_sentiment.csv', index=False)
+    
+    print(f"✅ Сентимент обновлён на {today}")
+    print(df)
+    
+    return df
 
-print("\nУпрощённый новостной сентимент сгенерирован!")
-print("Файлы сохранены в data/news/")
+if __name__ == "__main__":
+    get_news_sentiment()

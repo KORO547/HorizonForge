@@ -21,3 +21,13 @@ config/api_keys.yaml
 
 # Настройки редактора
 .vscode/
+# Локальные базы данных
+*.db
+*.sqlite
+*.sqlite3
+
+# Временные и вспомогательные файлы
+*.pycode
+grok-*.ps1
+apply-fix.ps1
+test_*.py

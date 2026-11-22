@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>HorizonForge</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #0f172a; 
+            color: #e2e8f0; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        h1 { text-align: center; color: #60a5fa; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 30px; }
+        .cards { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+            justify-content: center; 
+        }
+        .card { 
+            background: #1e2937; 
+            border-radius: 12px; 
+            padding: 15px; 
+            width: 380px; 
+        }
+        canvas { max-height: 220px; }
+    </style>
+</head>
+<body>
+    <h1>🌍 HorizonForge</h1>
+    <p class="subtitle">7 активов • Реальное время</p>
+    
+    <!-- Вот этот блок очень важен -->
+    <div class="cards" id="container"></div>
+
+    <script>
+        console.log("🚀 Скрипт запущен");
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/assets?' + Date.now());
+                const assets = await res.json();
+                console.log("✅ Активов получено:", assets.length);
+
+                const container = document.getElementById('container');
+                if (!container) {
+                    console.error("❌ Не найден div#container!");
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                for (let asset of assets) {
+                    const cardHTML = `
+                        <div class="card">
+                            <h3>${asset.name} (${asset.ticker})</h3>
+                            <canvas id="chart-${asset.id}" width="350" height="180"></canvas>
+                        </div>`;
+                    container.innerHTML += cardHTML;
+
+                    const priceRes = await fetch(`/api/prices/${asset.id}?limit=60`);
+                    const prices = await priceRes.json();
+
+                    if (prices.length > 0) {
+                        const ctx = document.getElementById(`chart-${asset.id}`).getContext('2d');
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: prices.map(p => p.time ? p.time.slice(5,10) : ''),
+                                datasets: [{
+                                    label: asset.ticker,
+                                    data: prices.map(p => p.price),
+                                    borderColor: '#60a5fa',
+                                    tension: 0.3
+                                }]
+                            },
+                            options: { responsive: true }
+                        });
+                    }
+                }
+            } catch(e) {
+                console.error("❌ Общая ошибка:", e);
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>
